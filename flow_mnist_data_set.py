@@ -55,15 +55,6 @@ class FlowMnistDataset(data.Dataset):
         img = Image.fromarray(img.astype(np.uint8), mode='L')
         # TODO fix problem... it doesnt convert back to same numpy
 
-        # import copy
-        # before = copy.deepcopy(img)
-        # img = Image.fromarray(img.astype(np.uint8))
-        # img = Image.fromarray(img.astype(np.uint8), mode='L')
-        # img = np.asarray(img)
-        # print(img)
-        # after = np.asarray(img.
-        # print(before == after)
-
         if self.transform is not None:
             img = self.transform(img)
         return img, target
