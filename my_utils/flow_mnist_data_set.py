@@ -6,15 +6,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch.utils.data as data
 from PIL import Image
+from typing import Any, Callable, Dict, IO, List, Optional, Tuple, Union
 
 
 class FlowMnistDataset(data.Dataset):
-    def __init__(self, dataset_name, direction, duration, transform=None):
+    def __init__(self, dataset_name: str, direction: str, duration: int or str, train: bool = True,
+                 transform: Optional[Callable] = None):
         """
         Args:
             transform (callable, optional): Optional transform to be applied
                 on a sample.
+                :param train:
         """
+        # TODO implement some train/test split and add __init__(train:bool=True)
+        self.train = train
+        if not self.train:
+            raise NotImplemented("All dataset is returned for now.. Next will be train/test")
+
         self.dataset_name = dataset_name
         self.dataset_base_dir_path = Path(f"/home/eyal/dev/eyal-thesis/thesis-datasets-creator/{self.dataset_name}_npy")
 
@@ -32,7 +40,7 @@ class FlowMnistDataset(data.Dataset):
         self.x_path = self.dataset_base_dir_path / f"{self.direction_dir_name}/X_trim_and_tps_{self.duration}sec.npy"
         self.y_path = self.dataset_base_dir_path / f"{self.direction_dir_name}/y_trim_and_tps_{self.duration}sec.npy"
         self.data = np.load(self.x_path).astype(int)
-        self.data[self.data > 255] = 255  # TODO fix it
+        self.data[self.data > 255] = 255  # TODO fix it hold this info better
         self.labels = np.load(self.y_path).astype(int)
         self.transform = transform
 
@@ -45,7 +53,6 @@ class FlowMnistDataset(data.Dataset):
         """
         Args:
             index (int): Index
-
         Returns:
             tuple: (image, target) where target is index of the target class.
         """
@@ -53,7 +60,7 @@ class FlowMnistDataset(data.Dataset):
         # doing this so that it is consistent with Mnist dataset
         # to return a PIL Image
         img = Image.fromarray(img.astype(np.uint8), mode='L')
-        # TODO fix problem... it doesnt convert back to same numpy
+        # TODO Notice values not in the range (0,255) will disappear
 
         if self.transform is not None:
             img = self.transform(img)

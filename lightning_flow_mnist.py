@@ -1,11 +1,7 @@
-import os
-
 import torch
-from pytorch_lightning.loggers.test_tube import Experiment
 from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
-from torchvision.datasets import MNIST
 from torchvision import transforms
 import pytorch_lightning as pl
 from pytorch_lightning.metrics.functional import accuracy
@@ -80,7 +76,7 @@ class LitMNIST(pl.LightningModule):
         pass
 
     def setup(self, stage=None):
-        from flow_mnist_data_set import FlowMnistDataset
+        from my_utils.flow_mnist_data_set import FlowMnistDataset
         ds = FlowMnistDataset("ucdavis", "up", 60, transform=self.transform)
         ds_size = len(ds)
         test_percent = 0.3
